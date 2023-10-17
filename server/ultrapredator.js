@@ -1,4 +1,4 @@
-class UltraPredator extends LivingCreature{
+module.exports = class UltraPredator extends LivingCreature{
 
     getNewCoordinates() {
 

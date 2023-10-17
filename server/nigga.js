@@ -1,4 +1,4 @@
-class Nigga extends LivingCreature {
+module.exports = class Nigga extends LivingCreature {
 
     getNewCoordinates() {
 

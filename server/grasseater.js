@@ -1,5 +1,5 @@
-class Predator extends LivingCreature {
-
+module.exports = class GrassEater extends LivingCreature {
+    
     getNewCoordinates() {
         this.directions = [
             [this.x - 1, this.y - 1],
@@ -18,6 +18,7 @@ class Predator extends LivingCreature {
         return super.chooseCell(character)
     }
     move() {
+
         if (this.energy > 0) {
             this.energy--;
             let emptyCells = this.chooseCell(0);
@@ -26,64 +27,52 @@ class Predator extends LivingCreature {
                 matrix[this.y][this.x] = 0;
                 let newX = oneEmptyCell[0];
                 let newY = oneEmptyCell[1];
+                matrix[newY][newX] = 2
                 this.x = newX;
                 this.y = newY;
-                matrix[newY][newX] = 3
             }
-        }
-        else {
+        } else {
             this.die()
         }
     }
     eat() {
         let grasses = this.chooseCell(1);
-        let garssEaters = this.chooseCell(2);
-        let all = grasses.concat(garssEaters);
-
-
-        let one = random(all);
-        if (one) {
+        let oneGrass = random(grasses);
+        if (oneGrass) {
             this.energy++;
             matrix[this.y][this.x] = 0
-            let oneX = one[0];
-            let oneY = one[1];
-            matrix[oneY][oneX] = 3;
-            this.x = oneX;
-            this.y = oneY;
+            let oneGrassX = oneGrass[0];
+            let oneGrassY = oneGrass[1];
+            matrix[oneGrassY][oneGrassX] = 2;
+            this.x = oneGrassX;
+            this.y = oneGrassY;
 
             for (let i in grassArr) {
-                if (oneX == grassArr[i].x && oneY == grassArr[i].y) {
+                if (oneGrassX == grassArr[i].x && oneGrassY == grassArr[i].y) {
                     grassArr.splice(i, 1);
                     break;
                 }
             }
-            for (let i in grassEatArr) {
-                if (oneX == grassEatArr[i].x && oneY == grassEatArr[i].y) {
-                    grassEatArr.splice(i, 1);
-                    break;
-                }
-            }
-        }
-         else {
+        } else {
             this.move()
         }
     }
     die() {
         matrix[this.y][this.x] = 0
-        for (var i in predatorArr) {
-            if (this.x == predatorArr[i].x && this.y == predatorArr[i].y) {
-                predatorArr.splice(i, 1);
+        for (var i in grassEatArr) {
+            if (this.x == grassEatArr[i].x && this.y == grassEatArr[i].y) {
+                grassEatArr.splice(i, 1);
                 break;
             }
         }
     }
     mul() {
-        if (this.energy >= 8) {
+        if (this.energy >= 12) {
             let newCell = random(this.chooseCell(0));
             if (newCell) {
-                let newPredator = new Predator(newCell[0], newCell[1]);
-                predatorArr.push(newPredator);
-                matrix[newCell[1]][newCell[0]] = 3
+                let newGrassEater = new GrassEater(newCell[0], newCell[1]);
+                grassEatArr.push(newGrassEater);
+                matrix[newCell[1]][newCell[0]] = 2
                 this.energy = 5
             }
         }
