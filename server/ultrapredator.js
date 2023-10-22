@@ -1,5 +1,5 @@
 module.exports = class UltraPredator extends LivingCreature{
-
+    
     getNewCoordinates() {
 
         this.directions = [
