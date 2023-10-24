@@ -1,7 +1,11 @@
 var socket = io();
 var side = 400;
-
-
+var bu = document.getElementById("button")
+grassEl = document.getElementById("grass")
+grassEaterEl = document.getElementById("grasseater")
+predatorEl = document.getElementById("predator")
+ultraPredatorEl = document.getElementById("ultrapredator")
+niggaEl = document.getElementById("nigga")
 
 
 socket.on("name", handelInfo);
@@ -52,4 +56,25 @@ function handleMatrix (matrix) {
             rect(x * side/matrix.length + 1, y * side/matrix.length + 1, side/matrix.length + 1, side/matrix.length + 1);
         }
     }
+}
+
+
+
+
+
+bu.addEventListener("click", function() {
+    socket.emit("get", "get")
+})
+
+
+socket.on("stat", handleInfo)
+
+
+function handleInfo(info){
+    info = JSON.parse(info)
+    grassEl.innerText = "Grass    " + info.grass
+    grassEaterEl.innerText = "Grasseater    " + info.grassEater
+    predatorEl.innerText = "Predator    " + info.predator
+    ultraPredatorEl.innerText = "Ultrapredator    " + info.ultraPredator
+    niggaEl.innerText = "Nigga    " + info.nigga
 }

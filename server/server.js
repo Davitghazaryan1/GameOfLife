@@ -7,6 +7,7 @@ var GrassEater = require('./grasseater')
 var Predator = require('./predator')
 var UltraPredator = require('./ultrapredator')
 var Nigga = require('./nigga')
+var fs = require("fs")
 random = require('./random');
 
 
@@ -31,10 +32,10 @@ server.listen(3000, function () {
 
 let size = 30;
 let grass = 10;
-let grassEater = 100;
-let predator = 70;
-let ultraPredator = 50;
-let nigga = 5;
+let grassEater = 200;
+let predator = 100;
+let ultraPredator = 90;
+let nigga = 10;
 
 
 
@@ -74,6 +75,19 @@ function start() {
     }
 
     io.sockets.emit("matrix", matrix)
+
+
+
+    var obj = {
+        grass: grassArr.length,
+        grassEater: grassEatArr.length,
+        predator: predatorArr.length,
+        ultraPredator: ultraPredatorArr.length,
+        nigga: niggaArr.length
+    }
+
+    var myJson = JSON.stringify(obj);
+    fs.writeFileSync("statistics.json", myJson)
 }
 
 
@@ -174,9 +188,17 @@ function matrixGenerator(size, countGrass, countGrassEater, predatorCount, ultra
 matrix = matrixGenerator(size, grass, grassEater, predator, ultraPredator, nigga);
 
 createObj();
-setInterval(start, 200);
+
+setInterval(start, 1000);
 
 
 io.on('connection', function (socket) {
     socket.emit("matrix", matrix);
+    socket.on("get", get)
 });
+
+
+function get(){
+info = fs.readFileSync("statistics.json").toString()
+    io.sockets.emit("stat", info)
+}
