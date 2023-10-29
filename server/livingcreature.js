@@ -1,10 +1,9 @@
 module.exports = class LivingCreature {
-
     constructor(x, y, index) {
         this.x = x;
         this.y = y;
-        this.multiply = 0;
         this.index = index;
+        this.multiply = 0;
         this.directions = [
             [this.x - 1, this.y - 1],
             [this.x, this.y - 1],
@@ -16,7 +15,6 @@ module.exports = class LivingCreature {
             [this.x + 1, this.y + 1]
         ];
     }
-    
     chooseCell(ch) {
         var found = [];
         for (var i in this.directions) {

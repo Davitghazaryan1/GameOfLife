@@ -1,39 +1,40 @@
-var socket = io();
-var side = 400;
-var bu = document.getElementById("button")
-grassEl = document.getElementById("grass")
-grassEaterEl = document.getElementById("grasseater")
-predatorEl = document.getElementById("predator")
-ultraPredatorEl = document.getElementById("ultrapredator")
-niggaEl = document.getElementById("nigga")
+var socket = io()
+var side = 300
 
+k = document.getElementById("k");
+f = document.getElementById("f");
+r = document.getElementById("r");
+d = document.getElementById("d");
+w = document.getElementById("w");
 
-socket.on("name", handelInfo);
+let winterArgument = false;
+let winter = document.getElementById('winter');
+let springArgument = false;
+var spring = document.getElementById("spring");
+let fallArgument = false;
+let fall = document.getElementById('fall');
+let summerArgument = true;
+let summer = document.getElementById('summer');
 
-function handelInfo(esim){
-    console.log(esim);
-}
+var p = document.getElementById("button");
+p.addEventListener("click", clickbuttun);
 
-
-
-
-
-socket.on("matrix", handleMatrix);
-
-
+socket.on("matrix", handlematrix)
 
 
 
 function setup() {
-    createCanvas(side, side);
+    createCanvas(side + 1, side + 1);
     background('#acacac');
 }
 
 
+function handlematrix(matrix) {
 
-function handleMatrix (matrix) {
+    
     for (var y = 0; y < matrix.length; y++) {
         for (var x = 0; x < matrix[y].length; x++) {
+
             if (matrix[y][x] == 0) {
                 fill("#acacac");
             }
@@ -52,8 +53,10 @@ function handleMatrix (matrix) {
             else if (matrix[y][x] == 5) {
                 fill("#0a0a0a");
             }
-            
-            rect(x * side/matrix.length + 1, y * side/matrix.length + 1, side/matrix.length + 1, side/matrix.length + 1);
+
+            rect(x * side / matrix.length, y * side / matrix.length, side / matrix.length, side / matrix.length);
+             
+       
         }
     }
 }
@@ -62,19 +65,132 @@ function handleMatrix (matrix) {
 
 
 
-bu.addEventListener("click", function() {
-    socket.emit("get", "get")
+
+
+//statistics
+
+
+function clickbuttun() {
+    socket.emit("m", "get")
+
+}
+
+
+
+
+socket.on("info", getS)
+
+
+function getS(info) {
+    info = JSON.parse(info)
+    k.innerText = "Grass " + info.grass
+    f.innerText = "GrassEater " + info.grasseater
+    r.innerText = "Predator " + info.predator
+    d.innerText = "Terrorist " + info.terrorist
+    w.innerText = "Ultrapredator " + info.ultraPredator
+}
+
+
+
+
+//season
+
+
+ spring.addEventListener("click", function() {
+    springArgument = true;
+    summerArgument = false;
+    fallArgument = false;
+    winterArgument = false;
+});
+
+
+
+summer.addEventListener('click', function () {
+    springArgument = false;
+    summerArgument = true;
+    fallArgument = false;
+    winterArgument = false;
 })
 
 
-socket.on("stat", handleInfo)
+fall.addEventListener('click', function () {
+    springArgument = false;
+    summerArgument = false;
+    fallArgument = true;
+    winterArgument = false;
+});
 
 
-function handleInfo(info){
-    info = JSON.parse(info)
-    grassEl.innerText = "Grass    " + info.grass
-    grassEaterEl.innerText = "Grasseater    " + info.grassEater
-    predatorEl.innerText = "Predator    " + info.predator
-    ultraPredatorEl.innerText = "Ultrapredator    " + info.ultraPredator
-    niggaEl.innerText = "Nigga    " + info.nigga
-}
+winter.addEventListener('click', function () {
+    springArgument = false;
+    summerArgument = false;
+    fallArgument = false;
+    winterArgument = true;
+});
+
+
+
+
+//not used yet
+
+function draww(matrix) {
+    
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix[i].length; j++) {
+            if (matrix[i][j] == 0) {
+                fill(115, 67, 3);
+            }
+            // grass
+            else if (matrix[i][j] == 1) {
+                if (springArgument == true) {
+                    fill(57, 189, 0)
+                } else if (summerArgument == true) {
+                    fill(29, 105, 13);
+                } else if (autumnArgument == true) {
+                    fill(145, 155, 51);
+                } else if (winterArgument == true) {
+                    fill(255, 255, 255);
+                }
+            }
+            //
+
+            else if (matrix[i][j] == 2) {
+                fill(120, 18, 23);
+            }
+            else if (matrix[i][j] == 3) {
+                fill(250, 163, 12);
+            }
+            else if (matrix[i][j] == 4) {
+                fill(13, 61, 94);
+            }
+            else if (matrix[i][j] == 5) {
+                fill(148, 12, 114);
+            }}
+            rect(i * side / matrix.length, j * side / matrix.length, side / matrix.length, side / matrix.length);
+        }}
+
+
+
+
+
+
+// iradardzutyun (play/pause)
+
+var play = document.getElementById("play");
+play.addEventListener("click", function (){
+
+    socket.emit("play");
+    
+});
+
+var pause = document.getElementById("pause");
+pause.addEventListener("click", function (){
+    socket.emit("pause");
+    
+});
+
+
+
+
+
+

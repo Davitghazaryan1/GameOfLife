@@ -1,5 +1,13 @@
+let LivingCreature = require("./livingcreature.js")
+let random = require("./random");
 module.exports = class GrassEater extends LivingCreature {
-    
+
+    constructor(x, y, index) {
+
+        super(x, y, index)
+        this.energy = 15;
+
+    }
     getNewCoordinates() {
         this.directions = [
             [this.x - 1, this.y - 1],
@@ -12,74 +20,78 @@ module.exports = class GrassEater extends LivingCreature {
             [this.x + 1, this.y + 1]
         ];
     }
+    
 
-    chooseCell(character) {
-        this.getNewCoordinates()
-        return super.chooseCell(character)
+    chooseCell(ch) {
+        this.getNewCoordinates();
+        return super.chooseCell(ch);
+    }
+
+    mul() {
+        if (this.energy >= 30) {
+            var newCell = random(this.chooseCell(0));
+            if (newCell) {
+                var newGrassEater = new GrassEater(newCell[0], newCell[1], this.index);
+                grassEaterArr.push(newGrassEater);
+                matrix[newCell[1]][newCell[0]] = 2;
+                this.energy++;
+            }
+        }
     }
     move() {
 
-        if (this.energy > 0) {
-            this.energy--;
-            let emptyCells = this.chooseCell(0);
-            let oneEmptyCell = random(emptyCells);
-            if (oneEmptyCell) {
-                matrix[this.y][this.x] = 0;
-                let newX = oneEmptyCell[0];
-                let newY = oneEmptyCell[1];
-                matrix[newY][newX] = 2
-                this.x = newX;
-                this.y = newY;
-            }
-        } else {
+        this.energy--;
+
+
+        let emptyCells = this.chooseCell(0)
+        let newCell = random(emptyCells)
+        if (newCell) {
+
+            let newX = newCell[0]
+            let newY = newCell[1]
+            matrix[this.y][this.x] = 0
+            matrix[newY][newX] = 2
+            this.x = newX
+            this.y = newY
+        }
+        if (this.energy <= 0) {
             this.die()
         }
     }
-    eat() {
-        let grasses = this.chooseCell(1);
-        let oneGrass = random(grasses);
-        if (oneGrass) {
-            this.energy++;
-            matrix[this.y][this.x] = 0
-            let oneGrassX = oneGrass[0];
-            let oneGrassY = oneGrass[1];
-            matrix[oneGrassY][oneGrassX] = 2;
-            this.x = oneGrassX;
-            this.y = oneGrassY;
 
-            for (let i in grassArr) {
-                if (oneGrassX == grassArr[i].x && oneGrassY == grassArr[i].y) {
+    eat() {
+
+        let foods = this.chooseCell(1)
+        let food = random(foods)
+        if (food) {
+            this.energy++
+            matrix[this.y][this.x] = 0
+            let newX = food[0]
+            let newY = food[1]
+            matrix[food[1]][food[0]] = 2
+            this.x = newX
+            this.y = newY
+            for (var i in grassArr) {
+                if (newX == grassArr[i].x && newY == grassArr[i].y) {
                     grassArr.splice(i, 1);
                     break;
                 }
             }
-        } else {
+            if (this.energy >= 5) {
+                this.mul()
+            }
+        }
+        else {
             this.move()
         }
     }
     die() {
         matrix[this.y][this.x] = 0
-        for (var i in grassEatArr) {
-            if (this.x == grassEatArr[i].x && this.y == grassEatArr[i].y) {
-                grassEatArr.splice(i, 1);
+        for (var i in grassEaterArr) {
+            if (this.x == grassEaterArr[i].x && this.y == grassEaterArr[i].y) {
+                grassEaterArr.splice(i, 1);
                 break;
             }
         }
     }
-    mul() {
-        if (this.energy >= 12) {
-            let newCell = random(this.chooseCell(0));
-            if (newCell) {
-                let newGrassEater = new GrassEater(newCell[0], newCell[1]);
-                grassEatArr.push(newGrassEater);
-                matrix[newCell[1]][newCell[0]] = 2
-                this.energy = 5
-            }
-        }
-    }
-
-
-
-
-
 }
