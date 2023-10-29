@@ -34,6 +34,7 @@ terrorist = 10;
 
 var count = 0;
 var id;
+var frameRate = 500;
 
 matrix = [];
 grassArr = [];
@@ -212,6 +213,14 @@ io.on('connection', function (socket) {
     socket.on("pause", pause)
     socket.on("play", play)
 
+
+    socket.on("winter", changeRate)
+    socket.on("spring", changeRate)
+    socket.on("summer", changeRate)
+    socket.on("autumn", changeRate)
+    
+    
+
 });
 
 
@@ -238,8 +247,19 @@ function pause() {
 
 function play() {
     if (count == 0) {
-        id = setInterval(run, 500);
+        id = setInterval(run, frameRate);
         count++;
     }
 }
 
+
+
+
+
+
+
+function changeRate(rate){
+    frameRate = rate
+    clearInterval(id)
+    id = setInterval(run, frameRate)
+}
