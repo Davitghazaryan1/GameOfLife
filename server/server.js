@@ -219,7 +219,7 @@ io.on('connection', function (socket) {
     socket.on("summer", changeRate)
     socket.on("autumn", changeRate)
     
-    
+    socket.on("virus", virus)
 
 });
 
@@ -262,4 +262,20 @@ function changeRate(rate){
     frameRate = rate
     clearInterval(id)
     id = setInterval(run, frameRate)
+}
+
+
+
+
+function virus(){
+    for (var i in grassArr) {
+        grassArr.splice(0, i);
+    }
+    for(var i in matrix){
+        for(var j in matrix[i]){
+            if(matrix[i][j] == 1){
+                matrix[i][j] = 0;
+            }
+        }
+    }
 }
